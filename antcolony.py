@@ -63,7 +63,6 @@ class AntColony:
         lock = Lock()
         lock.acquire()
 
-        #outfile = open("results.dat", "a")
 
         print ("Update called by %s" % (ant.ID,))
         self.ant_counter += 1
