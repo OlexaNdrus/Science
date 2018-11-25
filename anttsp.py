@@ -21,6 +21,7 @@ num_ants = int(input())
 print('How long life of colony (iterations)?')
 num_iterations = int(input())
 
+num_repetitions = 1
 num_iterations=1
 
 if __name__ == "__main__":
