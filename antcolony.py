@@ -11,7 +11,7 @@ class AntColony:
         self.num_iterations = num_iterations
         self.Alpha = 0.1
 
-        # condition var
+        # Змінна умови
         self.cv = Condition()
         self.reset()
 
@@ -29,7 +29,7 @@ class AntColony:
             self.iteration()
 
             self.cv.acquire()
-            # wait until update calls notify()
+            # очікування доки оновлення не викличе метод notify()
             self.cv.wait()
 
             lock = self.graph.lock
@@ -39,7 +39,7 @@ class AntColony:
 
             self.cv.release()
 
-    # one iteration involves spawning a number of ant threads
+    # одна ітерація включає генерацію числа мурашиних потоків
     def iteration(self):
         self.avg_path_cost = 0
         self.ant_counter = 0
@@ -58,19 +58,13 @@ class AntColony:
     def iteration_counter(self):
         return self.iter_counter
 
-    # called by individual ants
+    # викликається окремими мурахами
     def update(self, ant):
         lock = Lock()
         lock.acquire()
-
-        #outfile = open("results.dat", "a")
-
         print ("Update called by %s" % (ant.ID,))
         self.ant_counter += 1
-
         self.avg_path_cost += ant.path_cost
-
-        # book-keeping
         if ant.path_cost < self.best_path_cost:
             self.best_path_cost = ant.path_cost
             self.best_path_mat = ant.path_mat
@@ -80,33 +74,24 @@ class AntColony:
         if self.ant_counter == len(self.ants):
             self.avg_path_cost /= len(self.ants)
             print ("Best: %s, %s, %s, %s" % (self.best_path_vec, self.best_path_cost, self.iter_counter, self.avg_path_cost,))
-
-            #outfile.write("\n%s\t%s\t%s" % (self.iter_counter, self.avg_path_cost, self.best_path_cost,))
-
             self.cv.acquire()
             self.cv.notify()
             self.cv.release()
-        #outfile.close()
-        # lock.release()
 
     def done(self):
         return self.iter_counter == self.num_iterations
 
-    # assign each ant a random start-node
+    # присвоєння кожній мурасі випадково обрану вершину
     def create_ants(self):
         self.reset()
         ants = []
         for i in range(0, self.num_ants):
             ant = Ant(i, random.randint(0, self.graph.num_nodes - 1), self)
             ants.append(ant)
-        
         return ants
 
-    # changes the tau matrix based on evaporation/deposition 
+    # зміна матриці відстаней (tau) відповідно до випаровування і насаджування (evaporation/deposition)
     def global_updating_rule(self):
-        evaporation = 0
-        deposition = 0
-
         for r in range(0, self.graph.num_nodes):
             for s in range(0, self.graph.num_nodes):
                 if r != s:
