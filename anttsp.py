@@ -7,22 +7,26 @@ import matplotlib.pyplot as plt
 import sys
 import traceback
 import xlrd
+import time
+
+start_time = time.time()
 
 #default
-num_nodes = 15
+print('How many cities?')
+num_nodes = int(input())
+
+print('How many ants?')
+num_ants = int(input())
+
+print('How long life of colony (iterations)?')
+num_iterations = int(input())
+
+num_repetitions = 1
+num_iterations=1
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1]:
         num_nodes = int(sys.argv[1])
-
-    if num_nodes <= 10:
-        num_ants = 20
-        num_iterations = 12
-        num_repetitions = 1
-    else:
-        num_ants = 40
-        num_iterations = 50
-        num_repetitions = 1
 
     workbook = xlrd.open_workbook('Data.xlsx')
     ws = workbook.sheet_by_index(0)
@@ -70,6 +74,8 @@ if __name__ == "__main__":
             graph_y_cords.append(float(y_data[node]))
 
         print ("\nBest path cost = %s\n" % (best_path_cost,))
+
+        print("--- %s seconds ---" % (time.time() - start_time))
 
         graph_x_cords.append(graph_x_cords[0])
         graph_y_cords.append(graph_y_cords[0])
