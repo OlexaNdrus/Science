@@ -9,7 +9,7 @@ import traceback
 import xlrd
 
 #default
-num_nodes = 15
+num_nodes = 17
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1]:
@@ -24,7 +24,7 @@ if __name__ == "__main__":
         num_iterations = 50
         num_repetitions = 1
 
-    workbook = xlrd.open_workbook('Data.xlsx')
+    workbook = xlrd.open_workbook('Дані_Lviv_Hub.xlsx')
     ws = workbook.sheet_by_index(0)
 
     cities, cost_mat = [], []
@@ -37,19 +37,17 @@ if __name__ == "__main__":
         cost_mat.append([])
         for row in range(1, ws.nrows):
             cost_mat[col-2].append(ws.cell_value(row, col))
-
     for row in range(1, ws.nrows):
         x_data.append(ws.cell_value(row, ws.ncols - 2))
-
     for row in range(1, ws.nrows):
         y_data.append(ws.cell_value(row, ws.ncols - 1))
-
     if num_nodes < len(cost_mat):
         cost_mat = cost_mat[0:num_nodes]
         for i in range(0, num_nodes):
             cost_mat[i] = cost_mat[i][0:num_nodes]
 
     try:
+        print(cost_mat)
         graph = AntGraph(num_nodes, cost_mat)
         best_path_vec = None
         best_path_cost = sys.maxsize

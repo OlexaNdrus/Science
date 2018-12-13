@@ -2,7 +2,6 @@ from threading import Lock
 
 class AntGraph:
     def __init__(self, num_nodes, delta_mat, tau_mat=None):
-        print (len(delta_mat))
         if len(delta_mat) != num_nodes:
             raise Exception("len(delta) != num_nodes")
 
@@ -24,7 +23,7 @@ class AntGraph:
 
     # 1 / delta = eta or etha 
     def etha(self, r, s):
-        return 1.0 / self.delta(r, s)
+        return 1.0 / float(self.delta(r, s))
 
     # inner locks most likely not necessary
     def update_tau(self, r, s, val):

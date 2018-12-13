@@ -104,8 +104,6 @@ class AntColony:
 
     # changes the tau matrix based on evaporation/deposition 
     def global_updating_rule(self):
-        evaporation = 0
-        deposition = 0
 
         for r in range(0, self.graph.num_nodes):
             for s in range(0, self.graph.num_nodes):
