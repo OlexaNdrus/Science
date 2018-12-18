@@ -6,10 +6,11 @@ class AntGraph:
             raise Exception("len(delta) != num_nodes")
 
         self.num_nodes = num_nodes
-        self.delta_mat = delta_mat # matrix of node distance deltas
+        # Матриця відстаней між вершинами (deltas)
+        self.delta_mat = delta_mat
         self.lock = Lock()
 
-        # tau mat contains the amount of phermone at node x,y
+        # Матриця tau містить величину феромону на вершині x,y
         if tau_mat is None:
             self.tau_mat = []
             for i in range(0, num_nodes):
@@ -21,44 +22,33 @@ class AntGraph:
     def tau(self, r, s):
         return self.tau_mat[r][s]
 
-    # 1 / delta = eta or etha 
+    # 1 / delta = eta або "зір" мурахи
     def etha(self, r, s):
         return 1.0 / float(self.delta(r, s))
 
-    # inner locks most likely not necessary
+    # внутрішні замки (locks) , швидше за все, не потрібні
     def update_tau(self, r, s, val):
-        lock = Lock()
-        lock.acquire()
         self.tau_mat[r][s] = val
-        lock.release()
+
 
     def reset_tau(self):
         lock = Lock()
         lock.acquire()
         avg = self.average_delta()
 
-        # initial tau 
+        # початкове значення феромону
         self.tau0 = 1.0 / (self.num_nodes * 0.5 * avg)
 
-        print ("Average = %s" % (avg,))
-        print ("Tau0 = %s" % self.tau0)
 
         for r in range(0, self.num_nodes):
             for s in range(0, self.num_nodes):
                 self.tau_mat[r][s] = self.tau0
         lock.release()
 
-    # average delta in delta matrix
+    # Середнє значення відстані в матриці відстаней
     def average_delta(self):
-        return self.average(self.delta_mat)
-
-    # average tau in tau matrix
-    def average_tau(self):
-        return self.average(self.tau_mat)
-
-    # average val of a matrix
-    def average(self, matrix):
         sum = 0
+        matrix = self.delta_mat
         for r in range(0, self.num_nodes):
             for s in range(0, self.num_nodes):
                 sum += matrix[r][s]
